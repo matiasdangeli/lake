@@ -79,6 +79,44 @@ describe('objetivos', () => {
     expect(refreshDistances(c, 4).targetDistanceKm).toBe(12);
   });
 
+  it('las frases y objetivos están bien escritos', () => {
+    const seen = new Set<string>();
+    for (let d = 1; d <= 28; d++) {
+      for (const level of [0, 1, 2, 3, 4, 7, 10, 13]) {
+        const c = resolve(`2026-08-${String(d).padStart(2, '0')}`, level);
+        seen.add(c.phrase);
+        // Arranca en mayúscula y termina en punto.
+        expect(c.phrase[0]).toBe(c.phrase[0].toUpperCase());
+        expect(c.phrase.endsWith('.')).toBe(true);
+        // Concordancia: nada de "2 vueltas tranquila".
+        expect(c.objective).not.toMatch(/\d vueltas [^,]*\b(tranquila|estable la)\b(?!s)/);
+      }
+    }
+    expect(seen.size).toBeGreaterThan(5);
+  });
+
+  it('la frase nunca contradice el objetivo', () => {
+    for (let d = 1; d <= 28; d++) {
+      for (const level of [0, 1, 2, 3, 4, 5, 6, 7, 10, 13]) {
+        const c = resolve(`2026-08-${String(d).padStart(2, '0')}`, level);
+        const p = c.phrase.toLowerCase();
+        if (/una vuelta/.test(p)) expect(c.targetLaps).toBe(1);
+        if (/\bdos\b/.test(p)) expect(c.targetLaps).toBe(2);
+        if (/\btres\b/.test(p)) expect(c.targetLaps).toBe(3);
+        // "la última vuelta" no es una cantidad, así que sólo miramos cantidades.
+      }
+    }
+  });
+
+  it('no repite la frase dos días seguidos', () => {
+    let prev = '';
+    for (let d = 1; d <= 28; d++) {
+      const c = resolve(`2026-08-${String(d).padStart(2, '0')}`);
+      expect(c.phrase).not.toBe(prev);
+      prev = c.phrase;
+    }
+  });
+
   it('la frase no deja marcadores sin reemplazar', () => {
     for (let d = 1; d <= 28; d++) {
       for (const level of [0, 1, 2, 3, 4, 7, 10]) {

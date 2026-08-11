@@ -17,7 +17,7 @@ import type {
 } from '../models/types';
 import { PHRASES, fillPhrase, objectiveFor } from '../data/microcopy';
 import { daysBetween, toISODate } from '../utils/date';
-import { hashSeed, mulberry32, pick } from '../utils/rng';
+import { hashSeed } from '../utils/rng';
 import { artworkForDayIndex } from './ChallengeArtworkGenerator';
 import { ladderStep } from './AdaptiveCyclingEngine';
 
@@ -48,7 +48,6 @@ export interface ResolveInput {
 export function resolveChallenge({ date, profile, progression, lapDistanceKm, soften }: ResolveInput): DailyChallenge {
   const dayIndex = dayIndexFor(profile, date);
   const seed = hashSeed(`${profile.installId}:${date}`);
-  const rand = mulberry32(seed);
   const artwork = artworkForDayIndex(profile.installId, dayIndex);
 
   const step = ladderStep(progression.level);
@@ -58,7 +57,7 @@ export function resolveChallenge({ date, profile, progression, lapDistanceKm, so
   const targetDistanceKm = Number((targetLaps * lapDistanceKm).toFixed(2));
   const targetDurationMin = type === 'DURACION' ? estimateMinutes(targetDistanceKm) : null;
 
-  const phrase = fillPhrase(pick(rand, PHRASES[type]), {
+  const phrase = fillPhrase(pickPhrase(profile.installId, type, dayIndex), {
     laps: targetLaps,
     km: targetDistanceKm,
     minutes: targetDurationMin,
@@ -83,6 +82,22 @@ export function resolveChallenge({ date, profile, progression, lapDistanceKm, so
     sessionId: null,
     customLaps: null,
   };
+}
+
+/**
+ * Elige la frase del día recorriendo el repertorio en vez de sortearlo.
+ *
+ * El paso es fijo por instalación y por tipo, y nunca múltiplo del tamaño del
+ * repertorio: eso garantiza —por construcción, no por suerte— que dos días
+ * seguidos no digan lo mismo, y reparte las frases en vez de insistir con dos.
+ */
+function pickPhrase(installId: string, type: ChallengeType, dayIndex: number): string {
+  const pool = PHRASES[type];
+  if (pool.length === 1) return pool[0];
+  const h = hashSeed(`${installId}:${type}`);
+  const step = 1 + (h % (pool.length - 1));
+  const offset = h % pool.length;
+  return pool[(offset + dayIndex * step) % pool.length];
 }
 
 /** Vueltas efectivas de un desafío (respeta el ajuste manual). */

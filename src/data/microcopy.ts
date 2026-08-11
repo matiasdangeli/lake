@@ -11,11 +11,12 @@ export const PHRASES: Record<ChallengeType, readonly string[]> = {
     'Una vuelta tranquila y listo.',
   ],
   VUELTAS: [
-    'Una vuelta. Sin negociar demasiado.',
+    '{lapsFull}. Sin negociar demasiado.',
     'Hoy el lago te pide {laps}.',
-    '{laps}. Drama opcional.',
+    '{lapsFull}. Drama opcional.',
     'Salí, hacé {laps} y volvé.',
     'Nada raro: {laps} y a casa.',
+    '{lapsFull} y listo. No hay más.',
   ],
   DISTANCIA: [
     'Hoy la cuenta es en kilómetros.',
@@ -25,6 +26,7 @@ export const PHRASES: Record<ChallengeType, readonly string[]> = {
   RITMO: [
     'Buscá un ritmo que puedas sostener.',
     'Constante gana. No hace falta ir rápido.',
+    'Ni rápido ni lento: parejo.',
     'Que la segunda mitad se parezca a la primera.',
   ],
   NEGATIVE_SPLIT: [
@@ -56,16 +58,17 @@ export const PHRASES: Record<ChallengeType, readonly string[]> = {
     'Suave no significa al pedo.',
     'Hoy no hace falta demostrar nada.',
     'Pedaleá. Después vemos.',
-    'Vuelta tranquila. Eso es todo.',
+    'Tranquilo. Eso es todo.',
   ],
 };
 
 /** Objetivo textual del desafío. */
 export function objectiveFor(type: ChallengeType, laps: number, minutes: number | null): string {
-  const l = laps === 1 ? '1 vuelta' : `${laps} vueltas`;
+  const one = laps === 1;
+  const l = one ? '1 vuelta' : `${laps} vueltas`;
   switch (type) {
     case 'CALIBRACION':
-      return `${l} tranquila, sin forzar`;
+      return `${l} ${one ? 'tranquila' : 'tranquilas'}, sin forzar`;
     case 'VUELTAS':
       return `Completá ${l}`;
     case 'DISTANCIA':
@@ -83,7 +86,7 @@ export function objectiveFor(type: ChallengeType, laps: number, minutes: number 
     case 'EXPLORACION':
       return `${l} cambiando algo del recorrido habitual`;
     case 'RECUPERACION':
-      return `${l} muy tranquila`;
+      return `${l} muy ${one ? 'tranquila' : 'tranquilas'}`;
   }
 }
 
@@ -92,10 +95,13 @@ export function fillPhrase(
   phrase: string,
   { laps, km, minutes }: { laps: number; km: number; minutes: number | null }
 ): string {
-  return phrase
+  const filled = phrase
+    .replace('{lapsFull}', laps === 1 ? 'una vuelta' : `${laps === 2 ? 'dos' : laps === 3 ? 'tres' : laps} vueltas`)
     .replace('{laps}', laps === 1 ? 'una vuelta' : laps === 2 ? 'dos' : laps === 3 ? 'tres' : `${laps}`)
     .replace('{km}', `${km.toFixed(km % 1 === 0 ? 0 : 1).replace('.', ',')} km`)
     .replace('{min}', String(minutes ?? 30));
+  // Las frases que empiezan con un marcador quedarían en minúscula.
+  return filled.charAt(0).toUpperCase() + filled.slice(1);
 }
 
 /** Estados vacíos y textos de sistema. */
