@@ -1,0 +1,82 @@
+/* Sistema visual de LAKE. Oscuro siempre, vidrio, poco ruido. */
+
+:root {
+  /* --- superficies -------------------------------------------------- */
+  --ink: #05070a;
+  --ink-2: #080b10;
+  --abyss: #0a0f16;
+  --surface-1: rgba(255, 255, 255, 0.045);
+  --surface-2: rgba(255, 255, 255, 0.07);
+  --surface-3: rgba(255, 255, 255, 0.1);
+  --hairline: rgba(255, 255, 255, 0.09);
+  --hairline-strong: rgba(255, 255, 255, 0.16);
+
+  /* --- marca -------------------------------------------------------- */
+  --deep: #16283c;
+  --slate: #3b5573;
+  --steel: #5b7a9c;
+  --bright: #4fb4f0;
+  --sky: #7fc8f5;
+  --glacier: #cfe9fb;
+
+  /* --- texto -------------------------------------------------------- */
+  --text: #f2f8fd;
+  --text-2: rgba(242, 248, 253, 0.66);
+  --text-3: rgba(242, 248, 253, 0.42);
+  --text-4: rgba(242, 248, 253, 0.26);
+
+  /* --- semántica ---------------------------------------------------- */
+  --ok: #6fd39a;
+  --warn: #e6b169;
+  --danger: #f0776b;
+
+  /* --- forma -------------------------------------------------------- */
+  --r-xs: 10px;
+  --r-sm: 14px;
+  --r-md: 20px;
+  --r-lg: 28px;
+  --r-xl: 34px;
+  --r-full: 999px;
+
+  --pad: 20px;
+  --gap: 14px;
+
+  /* --- tipografía --------------------------------------------------- */
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue',
+    system-ui, sans-serif;
+  --tabular: 'SF Mono', ui-monospace, 'Menlo', monospace;
+
+  /* --- movimiento --------------------------------------------------- */
+  --spring: cubic-bezier(0.22, 1, 0.28, 1);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --t-fast: 160ms;
+  --t-mid: 280ms;
+  --t-slow: 460ms;
+
+  /* --- alturas ------------------------------------------------------ */
+  --tabbar-h: 64px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  /* Tinte del día: lo pisa la portada del desafío. */
+  --tint: var(--bright);
+  --tint-soft: rgba(79, 180, 240, 0.22);
+
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-fast: 1ms;
+    --t-mid: 1ms;
+    --t-slow: 1ms;
+  }
+}
+
+:root[data-reduce-motion='true'] {
+  --t-fast: 1ms;
+  --t-mid: 1ms;
+  --t-slow: 1ms;
+}

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no"
+    />
+    <title>LAKE</title>
+    <meta name="description" content="Ride the loop. Vueltas al Lago Municipal de Colón, una por vez." />
+
+    <meta name="theme-color" content="#05070A" />
+    <meta name="color-scheme" content="dark" />
+
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/favicon.png" sizes="64x64" type="image/png" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <meta name="application-name" content="LAKE" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="LAKE" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta property="og:title" content="LAKE" />
+    <meta property="og:description" content="Ride the loop." />
+    <meta property="og:image" content="/icons/icon-512.png" />
+
+    <style>
+      /* Pinta el fondo antes de que cargue el bundle: nada de flash blanco. */
+      html,
+      body {
+        margin: 0;
+        background: #05070a;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
