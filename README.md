@@ -2,9 +2,6 @@
 
 **Ride the loop.**
 
-**App en vivo → https://matiasdangeli.github.io/lake/**
-(abrila en Safari desde el iPhone y usá *Compartir → Agregar a pantalla de inicio*)
-
 PWA instalable para aumentar de a poco la bicicleta dando vueltas al **Lago Municipal de Colón**, Buenos Aires.
 La unidad es la vuelta al lago. Hay un solo desafío por día y la carga sube únicamente cuando se completa el anterior.
 
@@ -22,31 +19,17 @@ npm run preview    # sirve dist/ para probar la PWA de verdad
 npm run verify     # typecheck + tests + build
 ```
 
-### Instalarla en el iPhone
-
-1. Abrí **https://matiasdangeli.github.io/lake/** en **Safari** (Chrome en iOS no puede instalar PWAs).
-2. Botón *Compartir* → **Agregar a pantalla de inicio** → *Agregar*.
-3. Abrila desde el ícono: arranca a pantalla completa, sin barra de Safari, y funciona sin señal.
-
-Los datos viven en el teléfono (IndexedDB). Si borrás el ícono se borran: exportá un backup desde
-Perfil antes.
-
-En desarrollo, `npm run dev` expone la red local; abrí la IP de la máquina desde Safari. Para instalar
-hace falta HTTPS (o `localhost`), porque el service worker no se registra en HTTP común.
-
-### Publicación
-
-Cada push a `main` dispara `.github/workflows/deploy.yml`: corre typecheck, tests y build con
-`BASE_PATH=/lake/`, y publica `dist/` en GitHub Pages. Si algún test falla, no se publica nada.
-
-Para publicarla en otro lado (Vercel, Netlify, un dominio propio) alcanza con `npm run build` sin
-`BASE_PATH` y servir `dist/` en la raíz: la app resuelve todas sus rutas contra `import.meta.env.BASE_URL`.
+Probar en el iPhone: `npm run dev` expone la red local (`--host`); abrí la IP de la máquina desde Safari
+y usá *Compartir → Agregar a pantalla de inicio*. En producción hace falta HTTPS para que se instale el
+service worker.
 
 ### Tests
 
 ```bash
-npm test                 # 49 tests de motores y utilidades (vitest)
-node scripts/e2e.mjs     # recorrido completo en un viewport de iPhone 16 Pro
+npm test                            # 49 tests de motores y utilidades (vitest)
+npm run e2e                         # recorrido completo en un viewport de iPhone 16 Pro
+BASE_PATH=/lake/ npm run e2e        # el mismo recorrido, publicado en subdirectorio
+BASE_PATH=/lake/ npm run smoke:subpath   # chequeo rápido de rutas bajo subdirectorio
 ```
 
 El e2e levanta un `vite preview`, abre Chromium a 402×874 @3x y recorre todos los flujos reales:

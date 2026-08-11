@@ -38,10 +38,9 @@ jobs:
       # typecheck + tests + build. Si algo falla, no se publica nada.
       - run: npm run verify
 
-      # enablement: activa Pages solo la primera vez, sin tocar la configuración.
+      # Requiere que Pages esté activado con Source = GitHub Actions
+      # (Settings -> Pages). El token de Actions no puede activarlo solo.
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:

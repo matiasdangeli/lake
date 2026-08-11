@@ -19,7 +19,10 @@ const shotsIdx = process.argv.indexOf('--shots');
 const SHOTS = shotsIdx > -1 ? process.argv[shotsIdx + 1] : resolve(root, '.e2e');
 /** Puerto libre elegido al vuelo: no chocamos con un preview olvidado. */
 const PORT = await freePort();
-const BASE = `http://127.0.0.1:${PORT}`;
+// Respeta BASE_PATH: así probamos también la publicación en un subdirectorio.
+const BASE_PATH = (process.env.BASE_PATH ?? '/').replace(/\/?$/, '/');
+// Con barra final: vite preview no redirige /lake -> /lake/.
+const BASE = `http://127.0.0.1:${PORT}${BASE_PATH}`;
 
 function freePort() {
   return new Promise((res, rej) => {
@@ -155,7 +158,7 @@ async function main() {
       w: img.naturalWidth, h: img.naturalHeight, src: img.getAttribute('src'),
     }));
     if (info.w < 500 || info.h < 600) throw new Error(`imagen chica o rota: ${JSON.stringify(info)}`);
-    if (!info.src?.startsWith('/challenges/')) throw new Error(`src inesperado: ${info.src}`);
+    if (!info.src?.startsWith(`${BASE_PATH}challenges/`)) throw new Error(`src inesperado: ${info.src}`);
   });
 
   await step('comenzar marca el desafío en curso', async () => {
@@ -372,7 +375,7 @@ async function main() {
 
   await step('estado vacío: primer arranque limpio', async () => {
     const fresh = await context.newPage();
-    await fresh.goto(`${BASE}/?fresh=1`);
+    await fresh.goto(`${BASE}?fresh=1`);
     await fresh.evaluate(async () => {
       localStorage.clear();
       for (const db of await indexedDB.databases()) if (db.name) indexedDB.deleteDatabase(db.name);
